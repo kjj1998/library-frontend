@@ -1,4 +1,7 @@
 import React, { useState } from 'react'
+import { useMutation } from '@apollo/client'
+
+import { ALL_BOOKS, CREATE_BOOK } from '../queries'
 
 const NewBook = (props) => {
   const [title, setTitle] = useState('')
@@ -7,14 +10,36 @@ const NewBook = (props) => {
   const [genre, setGenre] = useState('')
   const [genres, setGenres] = useState([])
 
+	/* 
+	 * Use CREATE_BOOK mutation to add more books
+	 * refetch ALL_BOOKS query if there are changes
+	 */
+
+	const [ addBook ] = useMutation(CREATE_BOOK, {
+    refetchQueries: [  {query: ALL_BOOKS} ],
+    onError: (error) => {
+			console.log(error)
+      console.log(error.graphQLErrors[0].message)
+    }
+  })
+
   if (!props.show) {
     return null
   }
 
   const submit = async (event) => {
     event.preventDefault()
-    
-    console.log('add book...')
+
+		/* Check that title, author and published fields have valid values */
+		if (title === "" || author === "" || published === "") {
+			console.log('The title, author and published fields must all have valid values')
+			return
+		}
+
+		/* call the mutation to add books into the backend database */
+		addBook({
+			variables: {title, author, published: parseInt(published), genres}
+		})
 
     setTitle('')
     setPublished('')
