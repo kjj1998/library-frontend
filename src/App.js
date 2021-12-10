@@ -1,19 +1,21 @@
-
+/* import libraies */
 import React, { useState } from 'react'
 import { useQuery } from '@apollo/client'
 
+/* import components */
 import Authors from './components/Authors'
 import Books from './components/Books'
 import NewBook from './components/NewBook'
 
-import { ALL_AUTHORS } from './queries'
-
+/* import queries */
+import { ALL_AUTHORS, ALL_BOOKS } from './queries'
 
 const App = () => {
   const [page, setPage] = useState('authors')
 	const authors = useQuery(ALL_AUTHORS)		// call the query to fetch all authors
+	const books = useQuery(ALL_BOOKS)				// call the query to fetch all books
 	
-	if (authors.loading) {		// wait for query to finish running
+	if (authors.loading || books.loading) {		// wait for query to finish running
 		return <div>loading...</div>
 	}
 
@@ -30,7 +32,7 @@ const App = () => {
       />
 
       <Books
-        show={page === 'books'}
+        show={page === 'books'} books={books.data.allBooks}
       />
 
       <NewBook
