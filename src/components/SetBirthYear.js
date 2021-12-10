@@ -6,7 +6,7 @@ import { EDIT_AUTHOR } from '../queries'
 const SetBirthYear = (props) => {
 	const [author, setAuthor] = useState('')
 	const [birthYear, setBirthYear] = useState('')
-
+	
 	/*
 	 * use EDIT_AUTHOR mutation to set/edit the birthyear of the author
 	 */
@@ -14,7 +14,6 @@ const SetBirthYear = (props) => {
 
 	const submit = (event) => {
 		event.preventDefault()
-
 		/* Check that author and born fields have valid values */
 		if ( author === "" || birthYear === "") {
 			console.log('The author and birthyear fields must all have valid values')
@@ -40,19 +39,31 @@ const SetBirthYear = (props) => {
 		}
 	}, [result.data])
 
+	/*
+	 * Event handler for select tag
+	 */
+	const handleChange = (event) => {
+		setAuthor(event.target.value)
+	}
+
 	return (
 		<div>
 			<h3>Set birthyear</h3>
 
 			<form onSubmit={submit}>
-				<div>
-					name <input value={author} onChange={({ target }) => setAuthor(target.value)} />
-				</div>
+				<select value={author} onChange={handleChange}>
+					{props.authors.map(a =>
+						<option key={a.id} value={a.name}>
+							{a.name}
+						</option>
+					)}
+				</select>
 				<div>
 					birthyear <input type='number' value={birthYear} onChange={({ target }) => setBirthYear(target.value)} />
 				</div>
 				<button type="submit">update author</button>
 			</form>
+
 		</div>
 	)
 }
