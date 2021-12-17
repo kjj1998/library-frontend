@@ -14,6 +14,7 @@ const App = () => {
   const [page, setPage] = useState('authors')
 	const authors = useQuery(ALL_AUTHORS)		// call the query to fetch all authors
 	const books = useQuery(ALL_BOOKS)				// call the query to fetch all books
+	console.log(books)
 	
 	if (authors.loading || books.loading) {		// wait for query to finish running
 		return <div>loading...</div>

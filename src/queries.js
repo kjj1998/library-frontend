@@ -12,14 +12,20 @@ export const ALL_AUTHORS = gql`
 	}
 `
 
-/* Query to fetch all books except details of their genres */
+/* Query to fetch all books and their details*/
 export const ALL_BOOKS = gql`
 	query allBooks {
 		allBooks {
 			title,
 			published,
-			author,
+			author {
+				name
+				born
+				id
+				bookCount
+			}
 			id
+			genres
 		}
 	}
 `
