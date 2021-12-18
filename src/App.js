@@ -14,10 +14,12 @@ import { ALL_AUTHORS, ALL_BOOKS } from './queries'
 const App = () => {
   const [page, setPage] = useState('authors')
 	const [token, setToken] = useState(null)
+	
 	const authors = useQuery(ALL_AUTHORS)		// call the query to fetch all authors
 	const books = useQuery(ALL_BOOKS)				// call the query to fetch all books
 	const client = useApolloClient()
 
+	/* check if there is an existing token in the local storage */
 	useEffect(() => {
 		if (localStorage.getItem('library-user-token')) {
 			setToken(localStorage.getItem('library-user-token'))
@@ -30,6 +32,7 @@ const App = () => {
 		return <div>loading...</div>
 	}
 
+	/* set token to null and clear the localStorage and client */
 	const logout = () => {
 		setToken(null)
 		localStorage.clear()
