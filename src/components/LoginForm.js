@@ -11,8 +11,12 @@ const LoginForm = (props) => {
 	useEffect(() => {
 		if (result.data) {
 			const token = result.data.login.value
+			const favoriteGenre = result.data.login.favoriteGenre
 			props.setToken(token)
+			props.setFavoriteGenre(favoriteGenre)
+			
 			localStorage.setItem('library-user-token', token)
+			localStorage.setItem('user-favorite-genre', favoriteGenre)
 		}
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [result.data])
