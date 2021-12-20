@@ -7,7 +7,6 @@ export const ALL_AUTHORS = gql`
 			name
 			born
 			id
-			bookCount
 		}
 	}
 `
@@ -22,7 +21,6 @@ export const ALL_BOOKS = gql`
 				name
 				born
 				id
-				bookCount
 			}
 			id
 			genres
@@ -66,6 +64,23 @@ export const LOGIN = gql`
 		login(username: $username, password: $password) {
 			value
 			favoriteGenre
+		}
+	}
+`
+
+/* Query to retrieve all books in a specified genre */
+export const ALL_BOOKS_IN_A_GENRE = gql`
+	query allBooksInAGenre($genreToSearch: String!) {
+		allBooks(genre: $genreToSearch) {
+			title,
+			published,
+			author {
+				name
+				born
+				id
+			}
+			id
+			genres
 		}
 	}
 `

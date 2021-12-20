@@ -1,11 +1,21 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { useLazyQuery } from "@apollo/client";
+
+import { ALL_BOOKS_IN_A_GENRE } from "../queries";
 
 const Recommendations = (props) => {
+	const [books, setBooks] = useState(null)
+	const [getBooks, result] = useLazyQuery(ALL_BOOKS_IN_A_GENRE)
+		
+	useEffect(() => {	
+		getBooks({ variables: { genreToSearch: props.favoriteGenre } })
+    if (result.data) {
+      setBooks(result.data.allBooks)
+    }
+  }, [getBooks, props.favoriteGenre, result.data])
+	
 	if (!props.show)
 		return null
-
-	const books = props.books
-	const favoriteGenre = props.favoriteGenre
 	
 	return (
 		<div>
@@ -25,7 +35,7 @@ const Recommendations = (props) => {
           {
 						/* only books belonging to the favorite genre are shown */
 						books.map(b => {
-							if (b.genres.includes(favoriteGenre)) { 
+							if (b.genres.includes(props.favoriteGenre)) { 
 								return (
 									<tr key={b.title}>
 										<td>{b.title}</td>

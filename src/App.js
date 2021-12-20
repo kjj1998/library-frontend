@@ -21,6 +21,7 @@ const App = () => {
 	const authors = useQuery(ALL_AUTHORS)		// call the query to fetch all authors
 	const client = useApolloClient()
 
+	console.log(authors)
 	/* check if there is an existing token in the local storage */
 	useEffect(() => {
 		if (localStorage.getItem('library-user-token')) {
@@ -60,7 +61,7 @@ const App = () => {
       </div>
 
       <Authors
-        show={page === 'authors'} authors={authors.data.allAuthors}
+        show={page === 'authors'} authors={authors.data.allAuthors} books={books.data.allBooks}
       />
 
       <Books
@@ -76,7 +77,7 @@ const App = () => {
 			/>
 
 			<Recommendations
-				show={page === 'recommendations'} favoriteGenre={favoriteGenre} books={books.data.allBooks}
+				show={page === 'recommendations'} favoriteGenre={favoriteGenre}
 			/>
 
     </div>
