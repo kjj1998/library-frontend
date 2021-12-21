@@ -8,8 +8,8 @@ const Recommendations = (props) => {
 	const [getBooks, result] = useLazyQuery(ALL_BOOKS_IN_A_GENRE)
 		
 	useEffect(() => {	
-		getBooks({ variables: { genreToSearch: props.favoriteGenre } })
-    if (result.data) {
+		getBooks({ variables: { genreToSearch: props.favoriteGenre } })	// call the query within the useEffect handler
+    if (result.data) {									// set state if result.data is not null
       setBooks(result.data.allBooks)
     }
   }, [getBooks, props.favoriteGenre, result.data])
