@@ -1,6 +1,6 @@
 /* import libraies */
 import React, { useState, useEffect } from 'react'
-import { useApolloClient, useQuery } from '@apollo/client'
+import { useApolloClient, useQuery, useSubscription } from '@apollo/client'
 
 /* import components */
 import Authors from './components/Authors'
@@ -10,7 +10,7 @@ import LoginForm from './components/LoginForm'
 import Recommendations from './components/Recommendations'
 
 /* import queries */
-import { ALL_AUTHORS, ALL_BOOKS } from './queries'
+import { ALL_AUTHORS, ALL_BOOKS, BOOK_ADDED } from './queries'
 
 const App = () => {
   const [page, setPage] = useState('authors')
@@ -21,7 +21,6 @@ const App = () => {
 	const authors = useQuery(ALL_AUTHORS)		// call the query to fetch all authors
 	const client = useApolloClient()
 
-	console.log(authors)
 	/* check if there is an existing token in the local storage */
 	useEffect(() => {
 		if (localStorage.getItem('library-user-token')) {
@@ -32,6 +31,27 @@ const App = () => {
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [token])
 	
+	const updateCacheWith = (addedBook) => {
+    const includedIn = (set, object) => 
+      set.map(p => p.id).includes(object.id)  
+
+    const dataInStore = client.readQuery({ query: ALL_BOOKS })
+    if (!includedIn(dataInStore.allBooks, addedBook)) {
+      client.writeQuery({
+        query: ALL_BOOKS,
+        data: { allBooks: dataInStore.allBooks.concat(addedBook) }
+      })
+    }   
+  }
+
+	useSubscription(BOOK_ADDED, {
+    onSubscriptionData: ({ subscriptionData }) => {
+			const addedBook = subscriptionData.data.bookAdded
+      window.alert(`${addedBook.title} added`)
+      updateCacheWith(addedBook)
+    }
+  })
+
 	if (authors.loading || books.loading) {		// wait for query to finish running
 		return <div>loading...</div>
 	}
@@ -69,7 +89,7 @@ const App = () => {
       />
 
       <NewBook
-        show={page === 'add'}
+        show={page === 'add'} updateCacheWith={updateCacheWith}
       />
 
 			<LoginForm
